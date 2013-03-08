@@ -121,6 +121,7 @@ class Ticker implements \Countable
 	}
 	
 	/**
+	 * Returns the count of watched fds
 	 * @implements \Countable
 	 * @return int
 	 */
@@ -141,7 +142,7 @@ class Ticker implements \Countable
 	
 	/**
 	 * Attach a write handler; let the callback return true, to stop watching the fd.
-	 * @param int $fd
+	 * @param resource $fd
 	 * @param callable $cb
 	 * @return \atick\Ticker
 	 */
