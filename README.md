@@ -1,7 +1,7 @@
-atick\Ticker
-============
+atick
+=====
 
-Asynchronnous resource handling, optionally (ab)using ticks
+Asynchronnous resource handling, optionally (ab)using ticks. [![Build Status](https://api.travis-ci.org/mike-php-net/atick.png)](https://travis-ci.org/mike-php-net/atick)
 
 **Example with ticks:**
 
