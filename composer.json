@@ -1,0 +1,19 @@
+{
+    "name": "mike_php_net/atick",
+    "type": "library",
+    "description": "Asynchronous resource handling, optionally (ab)using ticks",
+    "keywords": ["async", "tick", "resource"],
+    "homepage": "http://github.com/mike-php-net/atick",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Michael Wallner",
+            "email": "mike@php.net"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "atick": "lib"
+        }
+    }
+}
