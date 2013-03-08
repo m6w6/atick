@@ -1,7 +1,8 @@
 atick
 =====
+[![Build Status](https://travis-ci.org/mike-php-net/atick.png?branch=master)](https://travis-ci.org/mike-php-net/atick)
 
-Asynchronnous resource handling, optionally (ab)using ticks. [![Build Status](https://api.travis-ci.org/mike-php-net/atick.png)](https://travis-ci.org/mike-php-net/atick)
+Asynchronnous resource handling, optionally (ab)using ticks.
 
 **Example with ticks:**
 
