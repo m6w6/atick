@@ -86,8 +86,8 @@ class Ticker implements \Countable
 	 * The tick handler; calls atick\Ticker::wait(0)
 	 * @return int
 	 */
-	function __invoke() {
-		return $this->wait(0);
+	function __invoke($timeout = 0) {
+		return $this->wait($timeout);
 	}
 	
 	/**
@@ -97,26 +97,27 @@ class Ticker implements \Countable
 	 */
 	function wait($timeout = 1) {
 		$r = $w = $e = array();
+
 		foreach ($this->read as $s) {
-			$r[] = $s[0];
+			is_resource($s[0]) and $r[] = $s[0];
 		}
+
 		foreach ($this->write as $s) {
-			$w[] = $s[0];
+			is_resource($s[0]) and $w[] = $s[0];
 		}
-		$s = (int) $timeout;
-		$u = (int) (($timeout - $s) * 1000000);
-		if (($r || $w) && stream_select($r, $w, $e, $s, $u)) {
+
+		$t = (int) $timeout;
+		$u = (int) (($timeout - $t) * 1000000);
+
+		if (($r || $w) && stream_select($r, $w, $e, $t, $u)) {
 			foreach ($r as $s) {
-				if ($this->read[(int)$s][1]($s)) {
-					unset($this->read[(int)$s]);
-				}
+				$this->read[(int)$s][1]($s);
 			}
 			foreach ($w as $s) {
-				if ($this->write[(int)$s][1]($s)) {
-					unset($this->write[(int)$s]);
-				}
+				$this->write[(int)$s][1]($s);
 			}
 		}
+
 		return $this->count();
 	}
 	
@@ -126,28 +127,48 @@ class Ticker implements \Countable
 	 * @return int
 	 */
 	function count() {
+		foreach ($this->read as $i => $s) {
+			list($fd,,$verify) = $s;
+			if (!$verify($fd)) {
+				unset($this->read[$i]);
+			}
+		}
+
+		foreach ($this->write as $i => $s) {
+			list($fd,,$verify) = $s;
+			if (!$verify($fd)) {
+				unset($this->write[$i]);
+			}
+		}
+
 		return count($this->read) + count($this->write);
 	}
 	
 	/**
-	 * Attach a read handler; let the callback return true, to stop watching the fd.
+	 * Attach a read handler
 	 * @param resource $fd
-	 * @param callable $cb
+	 * @param callable $onread void($fd) the descriptor is readable, read data, now!
+	 * @param callable $verify bool($fd) wheter the fd is still valid and should be watched
 	 * @return \atick\Ticker
 	 */
-	function read($fd, callable $cb) {
-		$this->read[(int)$fd] = array($fd, $cb);
+	function read($fd, callable $onread, callable $verify = null) {
+		$this->read[(int)$fd] = array($fd, $onread, $verify ?: function($fd) {
+			return is_resource($fd) && !feof($fd);
+		});
 		return $this;
 	}
 	
 	/**
-	 * Attach a write handler; let the callback return true, to stop watching the fd.
+	 * Attach a write handler
 	 * @param resource $fd
-	 * @param callable $cb
+	 * @param callable $onwrite void($fd) the descriptor is writable, write data.
+	 * @param callable $verify bool($fd) wheter the fd is still valid and should be watched
 	 * @return \atick\Ticker
 	 */
-	function write($fd, callable $cb) {
-		$this->write[(int)$fd] = array($fd, $cb);
+	function write($fd, callable $onwrite, callable $verify = null) {
+		$this->write[(int)$fd] = array($fd, $onwrite, $verify ?: function($fd) {
+			return is_resource($fd) && !feof($fd);
+		});
 		return $this;
 	}
 }
