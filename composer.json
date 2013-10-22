@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Asynchronous resource handling, optionally (ab)using ticks",
     "keywords": ["async", "tick", "resource"],
-    "homepage": "http://github.com/mike-php-net/atick",
+    "homepage": "http://github.com/m6w6/atick",
     "license": "BSD-2-Clause",
     "authors": [
         {
