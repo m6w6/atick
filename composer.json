@@ -1,5 +1,5 @@
 {
-    "name": "mike_php_net/atick",
+    "name": "m6w6/atick",
     "type": "library",
     "description": "Asynchronous resource handling, optionally (ab)using ticks",
     "keywords": ["async", "tick", "resource"],
