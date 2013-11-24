@@ -51,7 +51,7 @@ class TickerTest extends \PHPUnit_Framework_TestCase {
 		stream_set_blocking($file, false);
 		
 		$this->ticker->read($file, function ($file) use (&$r) {
-			return $r;
+			fread($file, fstat($file)["size"]);
 		});
 		$this->assertCount(1, $this->ticker);
 		$this->ticker->write($file, function ($file) use (&$w) {
@@ -60,9 +60,6 @@ class TickerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount(2, $this->ticker);
 		
 		$this->assertSame(2, $this->ticker->wait());
-		$r = true;
-		$this->assertSame(1, $this->ticker->wait());
-		$w = true;
 		$this->assertSame(0, $this->ticker->wait());
 	}
 
